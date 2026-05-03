@@ -1,4 +1,6 @@
 ﻿using Microsoft.Win32;
+using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace WebScrapingDesktop
@@ -10,7 +12,21 @@ namespace WebScrapingDesktop
     {
         private const string RunKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
         private static readonly string AppName = Branding.AppName;
-        private static readonly string ExePath = Assembly.GetEntryAssembly()!.Location;
+
+        /// <summary>
+        /// 可靠获取当前 exe 的真实路径（发布后为 .exe；开发中 dotnet run 时获取不准属正常）
+        /// </summary>
+        private static string ExePath
+        {
+            get
+            {
+                // 优先使用进程路径，其次回退到 EntryAssembly.Location，最后用 MainModule.FileName
+                return Environment.ProcessPath
+                       ?? Assembly.GetEntryAssembly()?.Location
+                       ?? Process.GetCurrentProcess().MainModule?.FileName
+                       ?? string.Empty;
+            }
+        }
 
         /// <summary>
         /// 设置是否开机自启。enable=true 时写入注册表，false 时删除。
@@ -23,7 +39,9 @@ namespace WebScrapingDesktop
 
                 if (enable)
                 {
-                    key.SetValue(AppName, ExePath);
+                    // 路径加双引号，防止空格导致启动失败
+                    string value = $"\"{ExePath}\"";
+                    key.SetValue(AppName, value);
                 }
                 else
                 {
