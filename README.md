@@ -1,5 +1,5 @@
 # WebScrapingDesktop
-A small tool that can regularly scrape text information from web pages and display it on the desktop.
+A small tool that can regularly scrape text information from web pages and display it on the desktop.一款能够定期从网页抓取文本信息并在桌面上显示的小工具。
 
 一个能定时抓取网页文字信息并将其显示在桌面上的小工具。
 
@@ -30,6 +30,4 @@ A small tool that can regularly scrape text information from web pages and displ
 
 ### 其他说明
 - 所有设置存储在主程序目录下的setting.json中，可手动修改。
-- 如果您手动编译，编译后请将logo.ico放入主程序目录，否则将无法启动。
 - 本项目借助了DeepSeek编写。
-- 如需开机启动，请按Win+R打开“运行”窗口，输入``shell:startup``进入启动文件夹，然后复制一份本程序的快捷方式放到该文件夹中。
