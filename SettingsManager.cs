@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Windows;
 
@@ -10,7 +8,7 @@ namespace WebScrapingDesktop
     public class Settings
     {
         // ========== 外观 ==========
-        public string MainWindowColorHex { get; set; } = "#88000000";   // ARGB 半透明黑
+        public string MainWindowColorHex { get; set; } = "#88000000";
         public double MainWindowOpacityPercent { get; set; } = 80.0;
 
         // 文字元素1
@@ -48,6 +46,7 @@ namespace WebScrapingDesktop
         public int RefreshIntervalMinutes { get; set; } = 5;
         public bool IsLocked { get; set; } = true;
         public bool IsVisible { get; set; } = true;
+        public bool AutoStart { get; set; } = false;      // 新增：开机自启
         public double WindowLeft { get; set; } = 100;
         public double WindowTop { get; set; } = 100;
         public double WindowWidth { get; set; } = 400;
@@ -56,7 +55,8 @@ namespace WebScrapingDesktop
 
     public static class SettingsManager
     {
-        private static readonly string SettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings.json");
+        private static readonly string SettingsPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings.json");
 
         public static Settings Load()
         {
@@ -66,7 +66,6 @@ namespace WebScrapingDesktop
                     return new Settings();
 
                 string json = File.ReadAllText(SettingsPath);
-                // Newtonsoft.Json 默认支持注释
                 return JsonConvert.DeserializeObject<Settings>(json) ?? new Settings();
             }
             catch
@@ -79,19 +78,16 @@ namespace WebScrapingDesktop
         {
             try
             {
-                // 从窗口同步最新位置/大小
                 settings.WindowLeft = window.Left;
                 settings.WindowTop = window.Top;
                 settings.WindowWidth = window.Width;
                 settings.WindowHeight = window.Height;
                 settings.IsVisible = window.Visibility == Visibility.Visible;
 
-                // 手动生成带注释的 JSON 以保证可读性
-                string content =
-$@"{{
+                string content = $@"{{
     // ========== 外观设置 ==========
-    ""MainWindowColorHex"": ""{settings.MainWindowColorHex}"",  // 主窗口背景色 (ARGB十六进制)
-    ""MainWindowOpacityPercent"": {settings.MainWindowOpacityPercent}, // 窗口整体不透明度 (0-100)
+    ""MainWindowColorHex"": ""{settings.MainWindowColorHex}"",  // 主窗口背景色 (ARGB)
+    ""MainWindowOpacityPercent"": {settings.MainWindowOpacityPercent}, // 不透明度 (0-100)
     // 文字元素1
     ""TextElement1FontFamily"": ""{settings.TextElement1FontFamily}"",
     ""TextElement1FontSize"": {settings.TextElement1FontSize},
@@ -122,9 +118,10 @@ $@"{{
     ""BackupXPath3"": ""{settings.BackupXPath3}"",
 
     // ========== 通用设置 ==========
-    ""RefreshIntervalMinutes"": {settings.RefreshIntervalMinutes},  // 自动刷新间隔 (分钟)
-    ""IsLocked"": {settings.IsLocked.ToString().ToLower()},        // 是否锁定 (穿透+不可拖动)
+    ""RefreshIntervalMinutes"": {settings.RefreshIntervalMinutes},  // 自动刷新间隔(分钟)
+    ""IsLocked"": {settings.IsLocked.ToString().ToLower()},        // 是否锁定
     ""IsVisible"": {settings.IsVisible.ToString().ToLower()},      // 是否显示
+    ""AutoStart"": {settings.AutoStart.ToString().ToLower()},      // 是否开机自启
     ""WindowLeft"": {settings.WindowLeft},
     ""WindowTop"": {settings.WindowTop},
     ""WindowWidth"": {settings.WindowWidth},

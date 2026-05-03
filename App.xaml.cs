@@ -33,11 +33,18 @@ namespace WebScrapingDesktop
             else
                 _mainWindow.Hide();
 
+            // 拦截系统关机/注销，提前保存正确可见状态并标记退出
+            this.SessionEnding += (s, args) =>
+            {
+                _isShuttingDown = true;
+                SettingsManager.Save(settings, _mainWindow);   // 此时窗口仍处于原有显示/隐藏状态
+            };
+
             // 主窗口关闭事件：仅隐藏，不退出程序（除非正在退出）
             _mainWindow.Closing += (s, args) =>
             {
                 if (_isShuttingDown)
-                    return; // 正在由托盘退出，不拦截关闭，让程序自然结束
+                    return; // 正在由系统/托盘退出，不拦截关闭，让程序自然结束
 
                 // 用户点击窗口关闭按钮 -> 隐藏窗口并保存状态
                 args.Cancel = true;
