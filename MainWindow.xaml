@@ -1,0 +1,38 @@
+﻿<Window x:Class="WebScrapingDesktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="False"
+        MinWidth="200" MinHeight="100">
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="8"
+                      GlassFrameThickness="0"
+                      CornerRadius="12" />
+    </WindowChrome.WindowChrome>
+    <Border x:Name="MainBorder"
+            CornerRadius="12"
+            Background="#88000000">
+        <Grid Margin="8,10,8,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="79*"/>
+                <ColumnDefinition Width="105*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Margin="8,8,8,0" Grid.ColumnSpan="2">
+                <!-- 直接设置 x:Name，不再绑定 -->
+                <TextBlock x:Name="TextElement1"
+                           Text="加载中..."
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="TextElement2"
+                           Text="Loading..."
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="TextElement3"
+                           Text=""
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
